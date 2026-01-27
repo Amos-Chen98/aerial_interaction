@@ -21,36 +21,6 @@ class DragonSimpleNav:
         # TF listener for coordinate transformations
         self.tf_listener = tf.TransformListener()
 
-        # Subscribe to robot head pose (continuously updated)
-        self.robot_head_pose_sub = rospy.Subscriber('/robot_head_pose', PoseStamped, self.robot_head_pose_cb)
-
-        # Subscribe to hand pose (continuously updated)
-        self.hand_pose_sub = rospy.Subscriber('/hand_pose', PoseStamped, self.hand_pose_cb)
-
-        # Subscribe to trigger topic to start transformation and navigation
-        self.trigger_sub = rospy.Subscriber('/dragon/trigger_handover', Empty, self.trigger_handover_cb)
-
-        # Subscribe to CoG odometry for navigation feedback
-        self.cog_odom_sub = rospy.Subscriber('/dragon/uav/cog/odom', Odometry, self.cog_odom_cb)
-
-        # Subscribe to dragon joint states
-        self.joint_states_sub = rospy.Subscriber('/dragon/joint_states', JointState, self.joint_states_cb)
-
-        # Publisher for UAV navigation
-        self.uav_nav_pub = rospy.Publisher("/dragon/uav/nav", FlightNav, queue_size=10)
-
-        # Publisher for target pose (intermediate navigation)
-        self.target_pose_pub = rospy.Publisher("/dragon/target_pose", PoseStamped, queue_size=10)
-
-        # Publisher for joint control
-        self.joint_control_pub = rospy.Publisher("/dragon/joints_ctrl", JointState, queue_size=10)
-
-        # Publisher for visualization markers
-        self.marker_pub = rospy.Publisher("/dragon/intermediate_pose_marker", Marker, queue_size=10)
-
-        # Publisher for hand pose at handover trigger
-        self.hand_pose_handover_pub = rospy.Publisher("/hand_pose_handover", PoseStamped, queue_size=10)
-
         # Current joint states
         self.current_joint_positions = None
 
@@ -137,6 +107,19 @@ class DragonSimpleNav:
 
         # Flag to track if we're currently navigating
         self.is_navigating = False
+
+        self.robot_head_pose_sub = rospy.Subscriber('/robot_head_pose', PoseStamped, self.robot_head_pose_cb)
+
+        self.hand_pose_sub = rospy.Subscriber('/hand_pose', PoseStamped, self.hand_pose_cb)
+        self.trigger_sub = rospy.Subscriber('/dragon/trigger_handover', Empty, self.trigger_handover_cb)
+        self.cog_odom_sub = rospy.Subscriber('/dragon/uav/cog/odom', Odometry, self.cog_odom_cb)
+        self.joint_states_sub = rospy.Subscriber('/dragon/joint_states', JointState, self.joint_states_cb)
+
+        self.uav_nav_pub = rospy.Publisher("/dragon/uav/nav", FlightNav, queue_size=10)
+        self.target_pose_pub = rospy.Publisher("/dragon/target_pose", PoseStamped, queue_size=10)
+        self.joint_control_pub = rospy.Publisher("/dragon/joints_ctrl", JointState, queue_size=10)
+        self.marker_pub = rospy.Publisher("/dragon/intermediate_pose_marker", Marker, queue_size=10)
+        self.hand_pose_handover_pub = rospy.Publisher("/hand_pose_handover", PoseStamped, queue_size=10)
 
         rospy.loginfo("DragonSimpleNav initialized. Waiting for trigger messages...")
 
